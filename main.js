@@ -205,29 +205,5 @@ const SdvxViewerUI = {
       viewport.style.cursor = 'default';
       updateTransform(true);
     });
-
-
-viewport.addEventListener('wheel', e => {
-  if (!e.ctrlKey) return;
-
-  if (e.cancelable) e.preventDefault();
-
-  const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
-  const newScale = Math.min(
-    Math.max(scale * zoomFactor, minScale),
-    maxScale
-  );
-
-  const vpRect = viewport.getBoundingClientRect();
-  const cursorX = e.clientX - vpRect.left;
-  const cursorY = e.clientY - vpRect.top;
-
-  posX = cursorX - (cursorX - posX) * (newScale / scale);
-  posY = cursorY - (cursorY - posY) * (newScale / scale);
-
-  scale = newScale;
-  saveScale(scale);
-  updateTransform(true);
-}, { passive: false });
   }
 };
