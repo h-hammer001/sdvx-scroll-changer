@@ -13,7 +13,7 @@ html, body {
   text-align: left;
   position: relative;
   -webkit-text-size-adjust: 100%;
-  overscroll-behavior: none;
+  overscroll-behavior: auto;
 }
 
 .close-btn {
