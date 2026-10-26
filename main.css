@@ -1,10 +1,9 @@
-
 html, body {
-  height: auto;
-  min-height: 100%;
+  height: 100%;
   width: 100%;
   margin: 0;
   overflow: auto;
+  /* background is set dynamically in viewer.js based on id top 2 digits */
   background-color: transparent;
   background-position: center top;
   background-size: cover;
@@ -100,7 +99,7 @@ html, body {
   margin-bottom: 0;
   padding-top: 10px;
   padding-bottom: 10px;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.8); /* データフィールドと同じ色 */
   box-sizing: content-box;
 }
 
@@ -137,10 +136,10 @@ html, body {
   position: relative;
   display: flex;
   align-items: flex-start;
-  gap: 6px;
+  gap: 6px; /* 狭く */
   width: fit-content;
   background: rgba(0, 0, 0, 0.8);
-  padding: 6px 6px 0;
+  padding: 6px 6px 0; /* 底辺余白0px */
   margin-bottom: 0;
   box-sizing: border-box;
   min-height: 110px;
@@ -150,22 +149,22 @@ html, body {
 .logo-yt-row {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 2px;
-  margin-left: -41px;
+  gap: 6px; /* 狭く */
+  margin-top: 2px; /* 狭く */
+  margin-left: -41px; /* ロゴをレベルアイコンの左辺に合わせる */
   width: fit-content;
 }
 
 .notes-breakdown {
   display: flex;
   flex-direction: column;
-  gap: 0px;
+  gap: 0px; /* 狭く */
   font-size: 12px;
-  line-height: 1.25;
+  line-height: 1.25; /* 狭く */
   color: #fff;
   text-shadow: 1px 1px 2px #000;
   font-family: verdana, sans-serif;
-  margin-left: 2px;
+  margin-left: 2px; /* 狭く */
   flex-shrink: 0;
 }
 .note-line {
@@ -174,7 +173,7 @@ html, body {
   white-space: nowrap;
 }
 .note-label {
-  width: 42px;
+  width: 42px; /* 少し狭く */
   text-align: right;
 }
 .note-colon {
@@ -183,8 +182,8 @@ html, body {
 }
 .note-value {
   margin-left: 2px;
-  width: 28px;
-  text-align: left;
+  width: 28px; /* 固定幅でグラフ開始位置を揃える */
+  text-align: left; /* 数値を左揃え */
   display: inline-block;
 }
 .note-bar-damage {
@@ -203,19 +202,21 @@ html, body {
 .note-bar {
   display: inline-block;
   height: 5px;
-  margin-left: 6px;
+  margin-left: 6px; /* 数値との間に少し空白 */
   background: currentColor;
-  border-radius: 0;
+  border-radius: 0; /* 角を丸めない */
   vertical-align: middle;
   min-width: 0;
 }
 
+/* 棒の色を数値と同じにする */
 .note-line.tap .note-bar { background: #ff6b73; }
 .note-line.hold .note-bar { background: #e8a04a; }
 .note-line.slide .note-bar { background: #5fb8ef; }
 .note-line.air .note-bar { background: #65d06e; }
 .note-line.flick .note-bar { background: #30d4c8; }
 
+/* ノーツ種別ごとの色（少し明るく） */
 .note-line.tap .note-label,
 .note-line.tap .note-colon,
 .note-line.tap .note-value { color: #ff6b73; }
@@ -233,7 +234,7 @@ html, body {
 .note-line.flick .note-value { color: #30d4c8; }
 
 .song-logo {
-  position: relative;
+  position: relative; /* absoluteを解除 */
   object-fit: contain;
   pointer-events: none;
   z-index: 45;
@@ -297,14 +298,14 @@ html, body {
   width: 35px;
   height: 35px;
   object-fit: contain;
-  margin: -3px 0 auto 0;
+  margin: -3px 0 auto 0; /* 画像内部の上余白を補正してジャケット上辺に合わせる */
   flex-shrink: 0;
   display: block;
 }
 .song-lv-icon.we-lv {
   width: 50px;
   height: auto;
-  margin: 0 0 auto 0;
+  margin: 0 0 auto 0; /* WEは上辺をジャケットと揃える */
 }
 
 .title-cell {
@@ -319,7 +320,7 @@ html, body {
   line-height: 1.3;
   color: #fff;
   text-shadow: 1px 1px 2px #000;
-  margin-top: -2px;
+  margin-top: -2px; /* フォントの上余白を補正してジャケット上辺に合わせる */
 }
 .song-artist {
   font-size: 11px;
