@@ -5,5 +5,4 @@ https://sdvx.in でのパソコン上での操作性を向上させるスクリ�
 使用する際はこれをインストールの上、管理画面で以下の設定を行ってください<br>
 Resource Override<br>
 `https://sdvx.in/*/_/viewer-ui.js* → https://raw.githubusercontent.com/h-hammer001/sdvx-scroll-changer/refs/heads/main/main.js`<br>
-Stylus<br>
-`html, body{overscroll-behavior: auto !important}`
+`https://sdvx.in/*/_/viewer-ui.css* → https://raw.githubusercontent.com/h-hammer001/sdvx-scroll-changer/refs/heads/main/viewer.css`
