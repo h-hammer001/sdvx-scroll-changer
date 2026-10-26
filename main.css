@@ -2,7 +2,7 @@ html, body {
   height: 100%;
   width: 100%;
   margin: 0;
-  overflow: auto;
+  overflow: hidden;
   /* background is set dynamically in viewer.js based on id top 2 digits */
   background-color: transparent;
   background-position: center top;
@@ -13,7 +13,7 @@ html, body {
   text-align: left;
   position: relative;
   -webkit-text-size-adjust: 100%;
-  overscroll-behavior: auto;
+  overscroll-behavior: none;
 }
 
 .close-btn {
