@@ -207,35 +207,27 @@ const SdvxViewerUI = {
     });
 
 
-  viewport.addEventListener('wheel', e => {
-    if (e.ctrlKey) {
-      if (e.cancelable) e.preventDefault();
+viewport.addEventListener('wheel', e => {
+  if (!e.ctrlKey) return;
 
-      const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
-      const newScale = Math.min(
-        Math.max(scale * zoomFactor, minScale),
-        maxScale
-      );
+  if (e.cancelable) e.preventDefault();
 
-      const vpRect = viewport.getBoundingClientRect();
-      const cursorX = e.clientX - vpRect.left;
-      const cursorY = e.clientY - vpRect.top;
+  const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+  const newScale = Math.min(
+    Math.max(scale * zoomFactor, minScale),
+    maxScale
+  );
 
-      posX = cursorX - (cursorX - posX) * (newScale / scale);
-      posY = cursorY - (cursorY - posY) * (newScale / scale);
+  const vpRect = viewport.getBoundingClientRect();
+  const cursorX = e.clientX - vpRect.left;
+  const cursorY = e.clientY - vpRect.top;
 
-      scale = newScale;
-      saveScale(scale);
-      updateTransform(true);
-      return;
-    }
+  posX = cursorX - (cursorX - posX) * (newScale / scale);
+  posY = cursorY - (cursorY - posY) * (newScale / scale);
 
-    if (e.deltaX !== 0) {
-      if (e.cancelable) e.preventDefault();
-
-      posX -= e.deltaX;
-      updateTransform(true);
-    }
-  }, { passive: false });
+  scale = newScale;
+  saveScale(scale);
+  updateTransform(true);
+}, { passive: false });
   }
 };
