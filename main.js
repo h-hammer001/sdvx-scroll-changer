@@ -15,69 +15,26 @@ const SdvxViewerUI = {
       return 1.0;
     })();
 
-    let posX = 0;
-    let posY = 0;
-
     const saveScale = (s) => {
       try {
         localStorage.setItem(STORAGE_KEY_SCALE, s);
       } catch (e) {}
     };
 
-    function contentSize() {
-      const bottom = document.getElementById('bottomAdRow');
-      const w = Math.max(
-        targetElement.offsetWidth || 0,
-        targetElement.scrollWidth || 0,
-        bottom ? bottom.offsetWidth : 0
-      );
-      const h = Math.max(
-        targetElement.offsetHeight || 0,
-        targetElement.scrollHeight || 0,
-        bottom ? bottom.offsetTop + bottom.offsetHeight : 0
-      );
-      return { w, h };
-    }
-
-    function clampPosition(x, y, currentScale) {
-      const vpW = viewport.clientWidth;
-      const vpH = viewport.clientHeight;
-      const size = contentSize();
-      const elemW = size.w * currentScale;
-      const elemH = size.h * currentScale;
-
-      return {
-        x: elemW <= vpW ? 0 : Math.min(Math.max(x, vpW - elemW), 0),
-        y: elemH <= vpH ? 0 : Math.min(Math.max(y, vpH - elemH), 0)
-      };
-    }
-
-    function updateTransform(applyClamp = true) {
-      if (applyClamp) {
-        const clamped = clampPosition(posX, posY, scale);
-        posX = clamped.x;
-        posY = clamped.y;
-      }
-
-      targetElement.style.transform =
-        `translate(${posX}px, ${posY}px) scale(${scale})`;
-
+    function updateTransform() {
+      targetElement.style.transform = `scale(${scale})`;
       if (typeof window.syncViewerAds === 'function') {
         window.syncViewerAds();
       }
     }
 
-    setTimeout(() => updateTransform(true), 50);
-    window.addEventListener('resize', () => updateTransform(true));
+    setTimeout(updateTransform, 50);
+    window.addEventListener('resize', updateTransform);
 
     let initialDist = 0;
     let initialScale = 1.0;
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let initialPosX = 0;
-    let initialPosY = 0;
-    let initialCenterVpX = 0;
-    let initialCenterVpY = 0;
+    let initialCenterX = 0;
+    let initialCenterY = 0;
     let isIgnoredTouch = false;
 
     const getDistance = (t1, t2) =>
@@ -96,95 +53,47 @@ const SdvxViewerUI = {
 
       isIgnoredTouch = false;
 
-      if (e.touches.length === 1) {
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-        initialPosX = posX;
-        initialPosY = posY;
-      } else if (e.touches.length === 2) {
+      if (e.touches.length === 2) {
         initialDist = getDistance(e.touches[0], e.touches[1]);
         initialScale = scale;
-        initialPosX = posX;
-        initialPosY = posY;
 
-        const vpRect = viewport.getBoundingClientRect();
         const center = getCenter(e.touches[0], e.touches[1]);
+        const rect = viewport.getBoundingClientRect();
 
-        initialCenterVpX = center.clientX - vpRect.left;
-        initialCenterVpY = center.clientY - vpRect.top;
+        initialCenterX = center.clientX - rect.left;
+        initialCenterY = center.clientY - rect.top;
       }
-    }, { passive: false });
+    }, { passive: true });
 
     viewport.addEventListener('touchmove', e => {
-      if (isIgnoredTouch) return;
-
-      if (e.touches.length === 1 && initialDist === 0) {
-        if (e.cancelable) e.preventDefault();
-
-        posX = initialPosX + (e.touches[0].clientX - touchStartX);
-        posY = initialPosY + (e.touches[0].clientY - touchStartY);
-
-        updateTransform(true);
-      } else if (e.touches.length === 2 && initialDist > 0) {
-        if (e.cancelable) e.preventDefault();
-
-        const currentDist = getDistance(e.touches[0], e.touches[1]);
-
-        if (currentDist > 0) {
-          const newScale = Math.min(
-            Math.max(initialScale * (currentDist / initialDist), minScale),
-            maxScale
-          );
-
-          const factor = newScale / initialScale;
-          const vpRect = viewport.getBoundingClientRect();
-          const center = getCenter(e.touches[0], e.touches[1]);
-
-          posX = (center.clientX - vpRect.left) -
-            (initialCenterVpX - initialPosX) * factor;
-
-          posY = (center.clientY - vpRect.top) -
-            (initialCenterVpY - initialPosY) * factor;
-
-          scale = newScale;
-          updateTransform(true);
-        }
-      }
-    }, { passive: false });
-
-    const endTouch = (e) => {
-      if (isIgnoredTouch) {
-        if (e.touches.length === 0) isIgnoredTouch = false;
+      if (isIgnoredTouch || e.touches.length !== 2 || initialDist <= 0) {
         return;
       }
 
-      initialDist = 0;
+      const currentDist = getDistance(e.touches[0], e.touches[1]);
+      if (currentDist <= 0) return;
 
-      if (e.touches.length === 1) {
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-        initialPosX = posX;
-        initialPosY = posY;
+      const newScale = Math.min(
+        Math.max(initialScale * (currentDist / initialDist), minScale),
+        maxScale
+      );
+
+      scale = newScale;
+      updateTransform();
+    }, { passive: true });
+
+    const endTouch = (e) => {
+      if (e.touches.length < 2) {
+        initialDist = 0;
+        saveScale(scale);
       }
 
-      saveScale(scale);
-      updateTransform(true);
+      if (e.touches.length === 0) {
+        isIgnoredTouch = false;
+      }
     };
 
     viewport.addEventListener('touchend', endTouch);
     viewport.addEventListener('touchcancel', endTouch);
-
-    let isMouseDown = false;
-    let mouseStartX = 0;
-    let mouseStartY = 0;
-
-
-    window.addEventListener('mouseup', () => {
-      if (!isMouseDown) return;
-
-      isMouseDown = false;
-      viewport.style.cursor = 'default';
-      updateTransform(true);
-    });
   }
 };
