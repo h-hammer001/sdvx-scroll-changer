@@ -206,9 +206,9 @@ const SdvxViewerUI = {
       updateTransform(true);
     });
 
-    viewport.addEventListener('wheel', e => {
-      if (!e.ctrlKey) return;
 
+  viewport.addEventListener('wheel', e => {
+    if (e.ctrlKey) {
       if (e.cancelable) e.preventDefault();
 
       const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
@@ -227,6 +227,15 @@ const SdvxViewerUI = {
       scale = newScale;
       saveScale(scale);
       updateTransform(true);
-    }, { passive: false });
+      return;
+    }
+
+    if (e.deltaX !== 0) {
+      if (e.cancelable) e.preventDefault();
+
+      posX -= e.deltaX;
+      updateTransform(true);
+    }
+  }, { passive: false });
   }
 };
