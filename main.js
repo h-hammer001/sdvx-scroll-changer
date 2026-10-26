@@ -178,25 +178,6 @@ const SdvxViewerUI = {
     let mouseStartX = 0;
     let mouseStartY = 0;
 
-    viewport.addEventListener('mousedown', e => {
-      if (e.target.closest('button, .mrr-btn, .viewer-yt-link, a, iframe, .top-btn')) {
-        return;
-      }
-
-      isMouseDown = true;
-      mouseStartX = e.clientX - posX;
-      mouseStartY = e.clientY - posY;
-      viewport.style.cursor = 'grabbing';
-    });
-
-    window.addEventListener('mousemove', e => {
-      if (!isMouseDown) return;
-
-      posX = e.clientX - mouseStartX;
-      posY = e.clientY - mouseStartY;
-
-      updateTransform(true);
-    });
 
     window.addEventListener('mouseup', () => {
       if (!isMouseDown) return;
